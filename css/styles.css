@@ -1,0 +1,218 @@
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Шапка сайта */
+        .header {
+            background-color: #FF8000;
+            color: black;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+        }
+
+        .site-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-form input {
+            margin: 2px 0;
+            padding: 3px;
+        }
+
+        .login-form .login-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+        .message-form {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px; /* можно настроить по вашему усмотрению */
+        }
+
+        .message-form input {
+            margin: 2px 0;
+            padding: 3px;
+        }
+
+        .message-form .message-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        /* Поле темы - жирный текст */
+        .message-form input[type="text"].subject {
+            font-weight: bold;
+            font-weight: bold;
+        }
+
+        /* Поле текста обращения - автоматическое расширение */
+        .message-form .message-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-form .message-text textarea {
+            min-height: 50px;
+            resize: vertical; /* разрешаем только вертикальное изменение размера */
+            padding: 5px;
+            margin-top: 2px;
+        }
+        /* Меню навигации */
+        .main-menu {
+            background-color: #FFBF40;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .main-menu a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .main-menu a:hover {
+            text-decoration: underline;
+        }
+
+        /* Основной контент */
+        .content {
+            display: flex;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Боковое меню */
+        .side-menu {
+            background-color: #FF8000;
+            width: 150px;
+            padding: 10px;
+        }
+
+        .side-menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .side-menu li {
+            margin-bottom: 10px;
+        }
+
+        .side-menu a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .side-menu a:hover {
+            text-decoration: underline;
+        }
+
+        /* Баннеры в боковом меню */
+        .side-banner {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .side-banner img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .side-banner p {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        /* Центральный контент */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        /* Стили для контента с картинкой */
+        .content-with-image {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .content-image {
+            width: 200px;
+            margin-right: 20px;
+        }
+
+        .content-text {
+            flex: 1;
+        }
+
+        /* Правая колонка (баннеры) */
+        .banners {
+            background-color: #FF8000;
+            width: 400px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .banner {
+            margin-bottom: 15px;
+        }
+
+        .banner img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .banner p {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        /* Подвал сайта */
+        .footer {
+            background-color: #FFBF40;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Таблица */
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px 0;
+        }
+
+        td, th {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* Списки */
+        ul.marked {
+            list-style-type: square;
+        }
+
+        ol.numbered {
+            list-style-type: decimal;
+        }
+
+        ol.multilevel {
+            list-style-type: decimal;
+        }
