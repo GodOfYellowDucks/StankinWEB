@@ -24,7 +24,7 @@ body {
 
 /* Шапка сайта */
 .header {
-    background-color: #FF8000;
+    background-color: #ffe6e6;
     color: black;
     padding: 15px;
     display: flex;
@@ -67,7 +67,7 @@ body {
 
 /* Главное меню */
 .main-menu {
-    background-color: #FFBF40;
+    background-color: #d8d1d1;
     padding: 10px;
     display: flex;
     justify-content: space-around;
@@ -189,7 +189,7 @@ body {
 
 /* Подвал сайта */
 .footer {
-    background-color: #FFBF40;
+    background-color: #f8f8f8;
     padding: 10px;
     text-align: center;
 }
