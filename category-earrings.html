@@ -54,6 +54,12 @@
                 <h2>Поиск товара</h2>
                 <form name="f1" method="post" action="search.php">
                     <input type="search" name="search_q" placeholder="Введите название товара">
+                    <select name="category">
+                        <option value="all">Все категории</option>
+                        <option value="rings">Кольца</option>
+                        <option value="earrings" selected>Серьги</option>
+                        <option value="other">Прочие украшения</option>
+                    </select>
                     <input type="submit" value="Поиск">
                 </form>
             </div>

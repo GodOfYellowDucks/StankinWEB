@@ -1,33 +1,114 @@
 <?php
 // Создаем ассоциативный массив с товарами
 $products = array(
+    // Категория "Кольца"
     "Кольцо из золота с бриллиантами" => array(
         "id" => 1,
+        "category" => "rings",
         "description" => "Элегантное кольцо из золота с бриллиантами круглой огранки, выполненное из белого золота 585 пробы.",
-        "price" => "17990",
+        "price" => "75000",
         "image" => "images/ring_diamond.png",
         "link" => "product.html"
     ),
+    "Кольцо Товар 1" => array(
+        "id" => 5,
+        "category" => "rings",
+        "description" => "Описание товара 1 из категории колец.",
+        "price" => "50000",
+        "image" => "images/ring_1.png",
+        "link" => "#"
+    ),
+    "Кольцо Товар 2" => array(
+        "id" => 6,
+        "category" => "rings",
+        "description" => "Описание товара 2 из категории колец.",
+        "price" => "65000",
+        "image" => "images/ring_2.png",
+        "link" => "#"
+    ),
+    "Кольцо Товар 3" => array(
+        "id" => 7,
+        "category" => "rings",
+        "description" => "Описание товара 3 из категории колец.",
+        "price" => "80000",
+        "image" => "images/ring_3.png",
+        "link" => "#"
+    ),
+    
+    // Категория "Серьги"
     "Серьги из золота с бриллиантами" => array(
         "id" => 2,
+        "category" => "earrings",
         "description" => "Роскошные серьги из золота с бриллиантами. Классический дизайн, подходящий для любого случая.",
-        "price" => "11990",
+        "price" => "85000",
         "image" => "images/ear_diamond.png",
         "link" => "product1.html"
     ),
+    "Серьги Товар 1" => array(
+        "id" => 8,
+        "category" => "earrings",
+        "description" => "Описание товара 1 из категории серьги.",
+        "price" => "45000",
+        "image" => "images/ear_1.png",
+        "link" => "#"
+    ),
+    "Серьги Товар 2" => array(
+        "id" => 9,
+        "category" => "earrings",
+        "description" => "Описание товара 2 из категории серьги.",
+        "price" => "55000",
+        "image" => "images/ear_2.png",
+        "link" => "#"
+    ),
+    "Серьги Товар 3" => array(
+        "id" => 10,
+        "category" => "earrings",
+        "description" => "Описание товара 3 из категории серьги.",
+        "price" => "70000",
+        "image" => "images/ear_3.png",
+        "link" => "#"
+    ),
+    
+    // Категория "Прочие украшения"
     "Подвеска из золота с бриллиантом" => array(
         "id" => 3,
+        "category" => "other",
         "description" => "Изящная подвеска из золота с бриллиантом. Элегантное украшение на каждый день.",
-        "price" => "2790",
+        "price" => "45000",
         "image" => "images/podv_diamond.png",
         "link" => "product2.html"
     ),
     "Браслет из золота" => array(
         "id" => 4,
+        "category" => "other",
         "description" => "Стильный браслет из золота. Прекрасное дополнение к любому образу.",
-        "price" => "5800",
+        "price" => "35000",
         "image" => "images/braslet_gold.png",
         "link" => "product4.html"
+    ),
+    "Прочее Товар 1" => array(
+        "id" => 11,
+        "category" => "other",
+        "description" => "Описание товара 1 из категории прочие украшения.",
+        "price" => "40000",
+        "image" => "images/other_1.png",
+        "link" => "#"
+    ),
+    "Прочее Товар 2" => array(
+        "id" => 12,
+        "category" => "other",
+        "description" => "Описание товара 2 из категории прочие украшения.",
+        "price" => "60000",
+        "image" => "images/other_2.png",
+        "link" => "#"
+    ),
+    "Прочее Товар 3" => array(
+        "id" => 13,
+        "category" => "other",
+        "description" => "Описание товара 3 из категории прочие украшения.",
+        "price" => "55000",
+        "image" => "images/other_3.png",
+        "link" => "#"
     )
 );
 
@@ -46,9 +127,25 @@ if (isset($_POST['search_q'])) {
         
         foreach ($products as $name => $details) {
             // Приводим к нижнему регистру для регистронезависимого поиска
-            // Используем strpos и strtolower вместо mb_strpos, чтобы избежать проблем с кодировкой
-            if (strpos(mb_strtolower($name, 'UTF-8'), mb_strtolower($search_q, 'UTF-8')) !== false) {
+            if (strpos(mb_strtolower($name, 'UTF-8'), mb_strtolower($search_q, 'UTF-8')) !== false ||
+                strpos(mb_strtolower($details['description'], 'UTF-8'), mb_strtolower($search_q, 'UTF-8')) !== false) {
                 $results[$name] = $details;
+            }
+        }
+    }
+}
+
+// Получаем поисковую категорию, если она задана
+$category_filter = '';
+if (isset($_POST['category']) && !empty($_POST['category'])) {
+    $category_filter = $_POST['category'];
+    
+    // Если категория задана и это не поиск по всем категориям
+    if ($category_filter != 'all') {
+        // Фильтруем результаты по категории
+        foreach ($results as $name => $details) {
+            if ($details['category'] != $category_filter) {
+                unset($results[$name]);
             }
         }
     }
@@ -103,6 +200,12 @@ if (isset($_POST['search_q'])) {
                 <h2>Поиск товара</h2>
                 <form name="f1" method="post" action="search.php">
                     <input type="search" name="search_q" placeholder="Введите название товара" value="<?php echo isset($search_q) ? htmlspecialchars($search_q) : ''; ?>">
+                    <select name="category">
+                        <option value="all" <?php if(isset($category_filter) && $category_filter == 'all') echo 'selected'; ?>>Все категории</option>
+                        <option value="rings" <?php if(isset($category_filter) && $category_filter == 'rings') echo 'selected'; ?>>Кольца</option>
+                        <option value="earrings" <?php if(isset($category_filter) && $category_filter == 'earrings') echo 'selected'; ?>>Серьги</option>
+                        <option value="other" <?php if(isset($category_filter) && $category_filter == 'other') echo 'selected'; ?>>Прочие украшения</option>
+                    </select>
                     <input type="submit" value="Поиск">
                 </form>
             </div>
@@ -128,7 +231,14 @@ if (isset($_POST['search_q'])) {
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
+            <?php else: ?>
+                <p>Введите поисковый запрос для поиска товаров.</p>
             <?php endif; ?>
+            
+            <!-- Кнопка возврата к каталогу -->
+            <div class="category-navigation" style="margin-top: 20px;">
+                <a href="catalog.html">Вернуться к каталогу</a>
+            </div>
         </div>
 
         <!-- Баннеры -->
