@@ -229,6 +229,72 @@ body {
     text-decoration: underline;
 }
 
+/* Стили для категорий товаров */
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+.category-item {
+    width: 250px;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.category-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.category-item h3 {
+    margin: 10px 0;
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.category-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Навигация по категориям */
+.category-navigation {
+    margin: 15px 0;
+}
+
+.category-navigation a {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #FFBF40;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.category-navigation a:hover {
+    background-color: #FF8000;
+    color: white;
+}
+
 /* Стили для цены товара на странице продукта */
 .product-price {
     font-size: 24px;
