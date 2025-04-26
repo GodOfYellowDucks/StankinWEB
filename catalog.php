@@ -1,3 +1,8 @@
+<?php
+// Подключаемся к базе данных
+require_once 'db_connect.php';
+require_once 'products_functions.php';
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -7,33 +12,15 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Шапка сайта -->
-    <div class="header">
-        <img src="images/logo.png" alt="Логотип Диамант" class="logo">
-        <div class="site-title">ДИАМАНТ</div>
-        <div class="login-form">
-            <div>логин: <input type="text"></div>
-            <div>пароль: <input type="password"></div>
-            <div class="login-buttons">
-                <a href="registration.html">регистрация</a>
-                <button>войти</button>
-            </div>
-        </div>
-    </div>
+    <?php include 'header.php'; ?>
 
-    <!-- Главное меню -->
-    <div class="main-menu">
-        <a href="index.html">Главная</a>
-        <a href="catalog.html">Каталог</a>
-        <a href="contacts.html">Контакты</a>
-    </div>
 
     <!-- Основной контент -->
     <div class="content">
         <!-- Боковое меню -->
         <nav class="side-menu">
             <ul>
-                <li><a href="index.html">О нас</a></li>
+                <li><a href="index.php">О нас</a></li>
                 <li><a href="#">История фирмы</a></li>
                 <li><a href="#">Сотрудники</a></li>
             </ul>
@@ -62,21 +49,21 @@
             <!-- Категории товаров -->
             <div class="categories">
                 <div class="category-item">
-                    <a href="category-rings.html">
+                    <a href="category-rings.php">
                         <img src="images/ring_diamond.png" alt="Кольца">
                         <h3>Кольца</h3>
                     </a>
                 </div>
 
                 <div class="category-item">
-                    <a href="category-earrings.html">
+                    <a href="category-earrings.php">
                         <img src="images/ear_diamond.png" alt="Серьги">
                         <h3>Серьги</h3>
                     </a>
                 </div>
 
                 <div class="category-item">
-                    <a href="category-other.html">
+                    <a href="category-other.php">
                         <img src="images/podv_diamond.png" alt="Прочие украшения">
                         <h3>Прочие украшения</h3>
                     </a>
@@ -115,3 +102,7 @@
     </div>
 </body>
 </html>
+<?php
+// Закрываем соединение с базой данных
+mysqli_close($conn);
+?>

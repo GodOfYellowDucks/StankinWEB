@@ -1,3 +1,10 @@
+<?php
+// Запускаем сессию
+session_start();
+
+// Подключаемся к базе данных
+require_once 'db_connect.php';
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -5,35 +12,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Диамант - ювелирный магазин</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/cookie-notice.js"></script>
 </head>
 <body>
-    <!-- Шапка сайта -->
-    <div class="header">
-        <img src="images/logo.png" alt="Логотип Диамант" class="logo">
-        <div class="site-title">ДИАМАНТ</div>
-        <div class="login-form">
-            <div>логин: <input type="text"></div>
-            <div>пароль: <input type="password"></div>
-            <div class="login-buttons">
-                <a href="registration.html">регистрация</a>
-                <button>войти</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Главное меню -->
-    <nav class="main-menu">
-        <a href="index.html">Главная</a>
-        <a href="catalog.html">Каталог</a>
-        <a href="contacts.html">Контакты</a>
-    </nav>
+    <?php include 'header.php'; ?>
 
     <!-- Основной контент -->
     <div class="content">
         <!-- Боковое меню -->
         <div class="side-menu">
             <ul>
-                <li><a href="index.html">О нас</a></li>
+                <li><a href="index.php">О нас</a></li>
                 <li><a href="#">История фирмы</a></li>
                 <li><a href="#">Сотрудники</a></li>
             </ul>
@@ -102,8 +91,6 @@
                 </li>
                 <li>Костромская</li>
             </ol>
-
-
         </div>
 
         <!-- Баннеры -->
@@ -137,3 +124,7 @@
     </div>
 </body>
 </html>
+<?php
+// Закрываем соединение с базой данных
+mysqli_close($conn);
+?>

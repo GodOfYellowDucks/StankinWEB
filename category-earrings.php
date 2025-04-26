@@ -1,39 +1,30 @@
+<?php
+// Подключаемся к базе данных
+require_once 'db_connect.php';
+require_once 'products_functions.php';
+
+// Получаем товары из категории "earrings"
+$products = getProductsByCategory($conn, 'earrings');
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кольца - Диамант</title>
+    <title>Серьги - Диамант</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Шапка сайта -->
-    <div class="header">
-        <img src="images/logo.png" alt="Логотип Диамант" class="logo">
-        <div class="site-title">ДИАМАНТ</div>
-        <div class="login-form">
-            <div>логин: <input type="text"></div>
-            <div>пароль: <input type="password"></div>
-            <div class="login-buttons">
-                <a href="registration.html">регистрация</a>
-                <button>войти</button>
-            </div>
-        </div>
-    </div>
+    <?php include 'header.php'; ?>
 
-    <!-- Главное меню -->
-    <div class="main-menu">
-        <a href="index.html">Главная</a>
-        <a href="catalog.html">Каталог</a>
-        <a href="contacts.html">Контакты</a>
-    </div>
+
 
     <!-- Основной контент -->
     <div class="content">
         <!-- Боковое меню -->
         <nav class="side-menu">
             <ul>
-                <li><a href="index.html">О нас</a></li>
+                <li><a href="index.php">О нас</a></li>
                 <li><a href="#">История фирмы</a></li>
                 <li><a href="#">Сотрудники</a></li>
             </ul>
@@ -41,12 +32,12 @@
 
         <!-- Основной контент -->
         <div class="main-content">
-            <h1>Кольца</h1>
+            <h1>Серьги</h1>
             <hr>
             
             <!-- Навигация по категориям -->
             <div class="category-navigation">
-                <a href="catalog.html">Назад к категориям</a>
+                <a href="catalog.php">Назад к категориям</a>
             </div>
 
             <!-- Форма поиска -->
@@ -56,36 +47,28 @@
                     <input type="search" name="search_q" placeholder="Введите название товара">
                     <select name="category">
                         <option value="all">Все категории</option>
-                        <option value="rings" selected>Кольца</option>
-                        <option value="earrings">Серьги</option>
+                        <option value="rings">Кольца</option>
+                        <option value="earrings" selected>Серьги</option>
                         <option value="other">Прочие украшения</option>
                     </select>
                     <input type="submit" value="Поиск">
                 </form>
             </div>
 
-            <!-- Товары категории "Кольца" -->
+            <!-- Товары категории "Серьги" -->
             <div class="catalog-items">
-                <div class="catalog-item">
-                    <img src="images/ring_diamond.png" alt="Кольцо с бриллиантами">
-                    <a href="product.html">Кольцо из золота с бриллиантами</a>
-                    <p>Элегантное кольцо с бриллиантами, выполненное из белого золота 585 пробы.</p>
-                    <p class="price">Цена: 17 990 руб.</p>
-                </div>
-
-                <div class="catalog-item">
-                    <img src="images/ring_1.png" alt="Товар 1">
-                    <a href="#">Кольцо из комбинированного золота с бриллиантами</a>
-                    <p>Комбинированное золото 585 пробы</p>
-                    <p class="price">Цена: 9 990 руб.</p>
-                </div>
-
-                <div class="catalog-item">
-                    <img src="images/ring_2.png" alt="Товар 2">
-                    <a href="#">Кольцо из золота </a>
-                    <p>Красное золото 585 пробы</p>
-                    <p class="price">Цена: 18 750 руб.</p>
-                </div>
+                <?php if (!empty($products)): ?>
+                    <?php foreach ($products as $product): ?>
+                        <div class="catalog-item">
+                            <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+                            <a href="product.php?id=<?php echo $product['id']; ?>"><?php echo htmlspecialchars($product['name']); ?></a>
+                            <p><?php echo htmlspecialchars($product['short_description']); ?></p>
+                            <p class="price">Цена: <?php echo number_format($product['price'], 0, ',', ' '); ?> руб.</p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Товары не найдены</p>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -120,3 +103,7 @@
     </div>
 </body>
 </html>
+<?php
+// Закрываем соединение с базой данных
+mysqli_close($conn);
+?>

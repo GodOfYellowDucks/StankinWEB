@@ -1,125 +1,28 @@
 <?php
-// Создаем ассоциативный массив с товарами
-$products = array(
-    // Категория "Кольца"
-    "Кольцо из золота с бриллиантами" => array(
-        "id" => 1,
-        "category" => "rings",
-        "description" => "Элегантное кольцо с бриллиантами, выполненное из белого золота 585 пробы.",
-        "price" => "17990",
-        "image" => "images/ring_diamond.png",
-        "link" => "product.html"
-    ),
-    "Кольцо из комбинированного золота с бриллиантами" => array(
-        "id" => 2,
-        "category" => "rings",
-        "description" => "Комбинированное золото 585 пробы",
-        "price" => "9990",
-        "image" => "images/ring_1.png",
-        "link" => "#"
-    ),
-    "Кольцо из золота" => array(
-        "id" => 3,
-        "category" => "rings",
-        "description" => "Красное золото 585 пробы",
-        "price" => "18750",
-        "image" => "images/ring_2.png",
-        "link" => "#"
-    ),
-    
-    // Категория "Серьги"
-    "Серьги из золота с бриллиантами" => array(
-        "id" => 4,
-        "category" => "earrings",
-        "description" => "Роскошные серьги с бриллиантами. Классический дизайн.",
-        "price" => "11990",
-        "image" => "images/ear_diamond.png",
-        "link" => "product1.html"
-    ),
-    "Серьги из комбинированного золота с бриллиантами" => array(
-        "id" => 5,
-        "category" => "earrings",
-        "description" => "Комбинированное золото 585 пробы",
-        "price" => "12990",
-        "image" => "images/ear_1.png",
-        "link" => "#"
-    ),
-    "Серьги из золота с бриллиантами" => array(
-        "id" => 6,
-        "category" => "earrings",
-        "description" => "Красное золото 585 пробы",
-        "price" => "16990",
-        "image" => "images/ear_2.png",
-        "link" => "#"
-    ),
-    
-    // Категория "Прочие украшения"
-    "Подвеска из золота с бриллиантом" => array(
-        "id" => 7,
-        "category" => "other",
-        "description" => "Изящная подвеска с бриллиантом. Элегантное украшение.",
-        "price" => "2790",
-        "image" => "images/podv_diamond.png",
-        "link" => "product2.html"
-    ),
-    "Браслет из золота" => array(
-        "id" => 8,
-        "category" => "other",
-        "description" => "Стильный браслет из золота. Прекрасное дополнение к образу.",
-        "price" => "5800",
-        "image" => "images/braslet_gold.png",
-        "link" => "product4.html"
-    ),
-    "Брошь из золочёного серебра с опалом, фианитами и эмалью" => array(
-        "id" => 9,
-        "category" => "other",
-        "description" => "Золочёное серебро 925 пробы",
-        "price" => "7700",
-        "image" => "images/other_1.png",
-        "link" => "#"
-    )
-);
+// Подключаемся к базе данных
+require_once 'db_connect.php';
+require_once 'products_functions.php';
 
-// Инициализируем результаты по умолчанию всеми товарами
-$results = $products;
+// Инициализируем переменные
+$search_q = '';
+$category_filter = 'all';
+$products = [];
+$error = '';
 
 // Проверяем, был ли отправлен поисковый запрос
-if (isset($_POST['search_q'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Получаем и очищаем поисковый запрос
-    $search_q = trim($_POST['search_q']);
+    $search_q = isset($_POST['search_q']) ? trim($_POST['search_q']) : '';
+    $category_filter = isset($_POST['category']) ? $_POST['category'] : 'all';
     
     // Если запрос не пустой, выполняем поиск
     if (!empty($search_q)) {
-        // Сбрасываем результаты и выполняем поиск
-        $results = array();
-        
-        foreach ($products as $name => $details) {
-            // Приводим к нижнему регистру для регистронезависимого поиска
-            if (strpos(mb_strtolower($name, 'UTF-8'), mb_strtolower($search_q, 'UTF-8')) !== false ||
-                strpos(mb_strtolower($details['description'], 'UTF-8'), mb_strtolower($search_q, 'UTF-8')) !== false) {
-                $results[$name] = $details;
-            }
-        }
-    }
-}
-
-// Получаем поисковую категорию, если она задана
-$category_filter = '';
-if (isset($_POST['category']) && !empty($_POST['category'])) {
-    $category_filter = $_POST['category'];
-    
-    // Если категория задана и это не поиск по всем категориям
-    if ($category_filter != 'all') {
-        // Фильтруем результаты по категории
-        foreach ($results as $name => $details) {
-            if ($details['category'] != $category_filter) {
-                unset($results[$name]);
-            }
-        }
+        $products = searchProducts($conn, $search_q, $category_filter);
+    } else {
+        $error = 'Пожалуйста, введите поисковый запрос';
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -129,33 +32,16 @@ if (isset($_POST['category']) && !empty($_POST['category'])) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Шапка сайта -->
-    <div class="header">
-        <img src="images/logo.png" alt="Логотип Диамант" class="logo">
-        <div class="site-title">ДИАМАНТ</div>
-        <div class="login-form">
-            <div>логин: <input type="text"></div>
-            <div>пароль: <input type="password"></div>
-            <div class="login-buttons">
-                <a href="registration.html">регистрация</a>
-                <button>войти</button>
-            </div>
-        </div>
-    </div>
+    <?php include 'header.php'; ?>
 
-    <!-- Главное меню -->
-    <div class="main-menu">
-        <a href="index.html">Главная</a>
-        <a href="catalog.html">Каталог</a>
-        <a href="contacts.html">Контакты</a>
-    </div>
+
 
     <!-- Основной контент -->
     <div class="content">
         <!-- Боковое меню -->
         <div class="side-menu">
             <ul>
-                <li><a href="index.html">О нас</a></li>
+                <li><a href="index.php">О нас</a></li>
                 <li><a href="#">История фирмы</a></li>
                 <li><a href="#">Сотрудники</a></li>
             </ul>
@@ -167,12 +53,12 @@ if (isset($_POST['category']) && !empty($_POST['category'])) {
             <div class="search-form">
                 <h2>Поиск товара</h2>
                 <form name="f1" method="post" action="search.php">
-                    <input type="search" name="search_q" placeholder="Введите название товара" value="<?php echo isset($search_q) ? htmlspecialchars($search_q) : ''; ?>">
+                    <input type="search" name="search_q" placeholder="Введите название товара" value="<?php echo htmlspecialchars($search_q); ?>">
                     <select name="category">
-                        <option value="all" <?php if(isset($category_filter) && $category_filter == 'all') echo 'selected'; ?>>Все категории</option>
-                        <option value="rings" <?php if(isset($category_filter) && $category_filter == 'rings') echo 'selected'; ?>>Кольца</option>
-                        <option value="earrings" <?php if(isset($category_filter) && $category_filter == 'earrings') echo 'selected'; ?>>Серьги</option>
-                        <option value="other" <?php if(isset($category_filter) && $category_filter == 'other') echo 'selected'; ?>>Прочие украшения</option>
+                        <option value="all" <?php if($category_filter == 'all') echo 'selected'; ?>>Все категории</option>
+                        <option value="rings" <?php if($category_filter == 'rings') echo 'selected'; ?>>Кольца</option>
+                        <option value="earrings" <?php if($category_filter == 'earrings') echo 'selected'; ?>>Серьги</option>
+                        <option value="other" <?php if($category_filter == 'other') echo 'selected'; ?>>Прочие украшения</option>
                     </select>
                     <input type="submit" value="Поиск">
                 </form>
@@ -180,21 +66,21 @@ if (isset($_POST['category']) && !empty($_POST['category'])) {
             
             <h1>Результаты поиска</h1>
             
-            <?php if (isset($error)): ?>
+            <?php if (!empty($error)): ?>
                 <p class="error"><?php echo $error; ?></p>
-            <?php elseif (isset($search_q)): ?>
-                <?php if (empty($results)): ?>
+            <?php elseif (!empty($search_q)): ?>
+                <?php if (empty($products)): ?>
                     <p>По вашему запросу ничего не найдено. Попробуйте другой поисковый запрос.</p>
                 <?php else: ?>
                     <p>Результаты поиска для запроса "<?php echo htmlspecialchars($search_q); ?>":</p>
                     
                     <div class="catalog-items">
-                        <?php foreach ($results as $name => $details): ?>
+                        <?php foreach ($products as $product): ?>
                             <div class="catalog-item">
-                                <img src="<?php echo $details['image']; ?>" alt="<?php echo htmlspecialchars($name); ?>">
-                                <a href="<?php echo $details['link']; ?>"><?php echo htmlspecialchars($name); ?></a>
-                                <p><?php echo htmlspecialchars($details['description']); ?></p>
-                                <p class="price">Цена: <?php echo number_format($details['price'], 0, ',', ' '); ?> руб.</p>
+                                <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+                                <a href="product.php?id=<?php echo $product['id']; ?>"><?php echo htmlspecialchars($product['name']); ?></a>
+                                <p><?php echo htmlspecialchars($product['short_description']); ?></p>
+                                <p class="price">Цена: <?php echo number_format($product['price'], 0, ',', ' '); ?> руб.</p>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -205,7 +91,7 @@ if (isset($_POST['category']) && !empty($_POST['category'])) {
             
             <!-- Кнопка возврата к каталогу -->
             <div class="category-navigation" style="margin-top: 20px;">
-                <a href="catalog.html">Вернуться к каталогу</a>
+                <a href="catalog.php">Вернуться к каталогу</a>
             </div>
         </div>
 
@@ -240,3 +126,7 @@ if (isset($_POST['category']) && !empty($_POST['category'])) {
     </div>
 </body>
 </html>
+<?php
+// Закрываем соединение с базой данных
+mysqli_close($conn);
+?>
