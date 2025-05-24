@@ -103,11 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация - Диамант</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/privacy-modal.js"></script>
 </head>
 <body>
     <?php include 'header.php'; ?>
-
-
 
     <!-- Основной контент -->
     <div class="content">
@@ -214,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div>
                     <input type="checkbox" id="agree" name="agree" required <?php echo (isset($_POST['agree'])) ? 'checked' : ''; ?>>
-                    <label for="agree">Я согласен с условиями пользовательского соглашения</label>
+                    <label for="agree">Я согласен с условиями пользовательского соглашения и <a href="#" class="privacy-link">политикой конфиденциальности</a></label>
                 </div>
                 <div class="message-buttons">
                     <button type="submit">Зарегистрироваться</button>

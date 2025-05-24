@@ -28,8 +28,14 @@ if (!$product) {
     exit;
 }
 
-// Устанавливаем основное изображение товара
-$main_image = !empty($product['images']) ? $product['images'][0]['image'] : $product['image'];
+// Получаем все изображения товара
+$product_images = [];
+if (!empty($product['images'])) {
+    $product_images = $product['images'];
+} else {
+    // Если нет изображений в базе, используем основное изображение
+    $product_images = [['image' => $product['image'], 'title' => $product['name']]];
+}
 
 // Получаем свойства товара из базы данных
 $properties_sql = "SELECT * FROM product_properties WHERE product_id = ? ORDER BY property_name, property_price ASC";
@@ -56,11 +62,10 @@ while ($property = mysqli_fetch_assoc($properties_result)) {
     <title><?php echo htmlspecialchars($product['name']); ?> - Диамант</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/cookie-notice.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/privacy-modal.js"></script>
+    <script src="js/cart.js"></script>
     <script>
-        function openFullImage(imageSrc) {
-            window.open(imageSrc, '_blank', 'width=800,height=600');
-        }
-        
         // Обновление цены при выборе свойств
         function updatePrice() {
             let basePrice = <?php echo $product['price']; ?>;
@@ -78,6 +83,11 @@ while ($property = mysqli_fetch_assoc($properties_result)) {
             const totalPrice = basePrice + additionalPrice;
             document.getElementById('product-price').innerText = totalPrice.toLocaleString('ru-RU') + ' руб.';
         }
+        
+        // Инициализация галереи товара
+        document.addEventListener('DOMContentLoaded', function() {
+            initProductGallery();
+        });
     </script>
 </head>
 <body>
@@ -98,56 +108,94 @@ while ($property = mysqli_fetch_assoc($properties_result)) {
         <div class="main-content">
             <h1><?php echo htmlspecialchars($product['name']); ?></h1>
 
-            <div class="product-image">
-                <img src="<?php echo htmlspecialchars($main_image); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" onclick="openFullImage('<?php echo htmlspecialchars($main_image); ?>')">
-            </div>
-
-            <div class="product-details">
-                <h2>Краткое описание товара</h2>
-                <p><?php echo htmlspecialchars($product['short_description']); ?></p>
-                <p class="product-price">Стоимость: <span id="product-price"><?php echo number_format($product['price'], 0, ',', ' '); ?></span> руб.</p>
-
-                <!-- Свойства товара с возможностью выбора -->
-                <div class="product-properties">
-                    <h2>Характеристики и варианты</h2>
-                    <form id="product-options-form">
-                        <?php foreach ($grouped_properties as $property_name => $properties): ?>
-                            <div class="property-group">
-                                <label for="property-<?php echo htmlspecialchars($property_name); ?>"><?php echo htmlspecialchars($property_name); ?>:</label>
-                                
-                                <?php if (count($properties) > 1): ?>
-                                    <!-- Если у свойства есть варианты, показываем выпадающий список -->
-                                    <select 
-                                        id="property-<?php echo htmlspecialchars($property_name); ?>" 
-                                        class="property-select" 
-                                        onchange="updatePrice()"
-                                    >
-                                        <?php foreach ($properties as $property): ?>
-                                            <option 
-                                                value="<?php echo $property['property_price']; ?>"
-                                                <?php echo $property['property_price'] == 0 ? 'selected' : ''; ?>
-                                            >
-                                                <?php echo htmlspecialchars($property['property_value']); ?>
-                                                <?php if ($property['property_price'] > 0): ?>
-                                                    (+<?php echo number_format($property['property_price'], 0, ',', ' '); ?> руб.)
-                                                <?php elseif ($property['property_price'] < 0): ?>
-                                                    (<?php echo number_format($property['property_price'], 0, ',', ' '); ?> руб.)
-                                                <?php endif; ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                <?php else: ?>
-                                    <!-- Если у свойства нет вариантов, просто показываем значение -->
-                                    <span class="property-value"><?php echo htmlspecialchars($properties[0]['property_value']); ?></span>
-                                <?php endif; ?>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <!-- Галерея изображений товара -->
+                <div class="product-gallery">
+                    <div class="product-slider">
+                        <?php foreach ($product_images as $index => $image): ?>
+                            <div class="product-slide">
+                                <img src="<?php echo htmlspecialchars($image['image']); ?>" 
+                                     alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                                     onclick="openFullImage('<?php echo htmlspecialchars($image['image']); ?>')">
                             </div>
                         <?php endforeach; ?>
-                    </form>
+                        
+                        <?php if (count($product_images) > 1): ?>
+                            <!-- Кнопки навигации -->
+                            <button class="previous" onclick="previousProductSlide()">&#10094;</button>
+                            <button class="next" onclick="nextProductSlide()">&#10095;</button>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <?php if (count($product_images) > 1): ?>
+                        <!-- Миниатюры -->
+                        <div class="thumbnails">
+                            <?php foreach ($product_images as $index => $image): ?>
+                                <div class="thumbnail <?php echo $index === 0 ? 'active' : ''; ?>" 
+                                     onclick="currentProductSlide(<?php echo $index + 1; ?>)">
+                                    <img src="<?php echo htmlspecialchars($image['image']); ?>" 
+                                         alt="<?php echo htmlspecialchars($product['name']); ?>">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
-                
-                <!-- Кнопка добавления в корзину -->
-                <div class="add-to-cart">
-                    <button class="add-to-cart-button">Добавить в корзину</button>
+
+                <div class="product-details" style="flex: 1;">
+                    <h2>Краткое описание товара</h2>
+                    <p><?php echo htmlspecialchars($product['short_description']); ?></p>
+                    <p class="product-price">Стоимость: <span id="product-price"><?php echo number_format($product['price'], 0, ',', ' '); ?></span> руб.</p>
+
+                    <!-- Свойства товара с возможностью выбора -->
+                    <?php if (!empty($grouped_properties)): ?>
+                        <div class="product-properties">
+                            <h2>Характеристики и варианты</h2>
+                            <form id="product-options-form">
+                                <?php foreach ($grouped_properties as $property_name => $properties): ?>
+                                    <div class="property-group">
+                                        <label for="property-<?php echo htmlspecialchars($property_name); ?>"><?php echo htmlspecialchars($property_name); ?>:</label>
+                                        
+                                        <?php if (count($properties) > 1): ?>
+                                            <!-- Если у свойства есть варианты, показываем выпадающий список -->
+                                            <select 
+                                                id="property-<?php echo htmlspecialchars($property_name); ?>" 
+                                                class="property-select" 
+                                                onchange="updatePrice()"
+                                            >
+                                                <?php foreach ($properties as $property): ?>
+                                                    <option 
+                                                        value="<?php echo $property['property_price']; ?>"
+                                                        <?php echo $property['property_price'] == 0 ? 'selected' : ''; ?>
+                                                    >
+                                                        <?php echo htmlspecialchars($property['property_value']); ?>
+                                                        <?php if ($property['property_price'] > 0): ?>
+                                                            (+<?php echo number_format($property['property_price'], 0, ',', ' '); ?> руб.)
+                                                        <?php elseif ($property['property_price'] < 0): ?>
+                                                            (<?php echo number_format($property['property_price'], 0, ',', ' '); ?> руб.)
+                                                        <?php endif; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        <?php else: ?>
+                                            <!-- Если у свойства нет вариантов, просто показываем значение -->
+                                            <span class="property-value"><?php echo htmlspecialchars($properties[0]['property_value']); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </form>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <!-- Кнопка добавления в корзину -->
+                    <?php if ($is_logged_in): ?>
+                        <div class="add-to-cart">
+                            <button class="add-to-cart-button">Добавить в корзину</button>
+                        </div>
+                    <?php else: ?>
+                        <div class="add-to-cart">
+                            <p>Для добавления товаров в корзину необходимо <a href="login.php">войти в систему</a></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -229,6 +277,9 @@ while ($property = mysqli_fetch_assoc($properties_result)) {
     <!-- Подвал сайта -->
     <div class="footer">
         &copy; Все права защищены
+        <?php if ($is_logged_in): ?>
+            | <a href="#" class="privacy-link">Политика конфиденциальности</a>
+        <?php endif; ?>
     </div>
 </body>
 </html>

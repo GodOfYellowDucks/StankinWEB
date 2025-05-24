@@ -4,6 +4,26 @@ session_start();
 
 // Подключаемся к базе данных
 require_once 'db_connect.php';
+
+// Получаем изображения для слайдера из базы данных
+$slider_images = [];
+$slider_sql = "SELECT DISTINCT image, 'Качественные ювелирные изделия' as title FROM product_images ORDER BY RAND() LIMIT 5";
+$slider_result = mysqli_query($conn, $slider_sql);
+
+if (mysqli_num_rows($slider_result) > 0) {
+    while ($row = mysqli_fetch_assoc($slider_result)) {
+        $slider_images[] = $row;
+    }
+}
+
+// Если нет изображений в БД, используем дефолтные
+if (empty($slider_images)) {
+    $slider_images = [
+        ['image' => 'images/ring_diamond.png', 'title' => 'Эксклюзивные кольца'],
+        ['image' => 'images/ear_diamond.png', 'title' => 'Роскошные серьги'],
+        ['image' => 'images/podv_diamond.png', 'title' => 'Изящные подвески']
+    ];
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -13,6 +33,9 @@ require_once 'db_connect.php';
     <title>Диамант - ювелирный магазин</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/cookie-notice.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/privacy-modal.js"></script>
+    <script src="js/cart.js"></script>
 </head>
 <body>
     <?php include 'header.php'; ?>
@@ -30,6 +53,26 @@ require_once 'db_connect.php';
 
         <!-- Основной контент -->
         <div class="main-content">
+            <!-- Слайдер -->
+            <div class="slider">
+                <?php foreach ($slider_images as $index => $slide): ?>
+                    <div class="item">
+                        <img src="<?php echo htmlspecialchars($slide['image']); ?>" alt="<?php echo htmlspecialchars($slide['title']); ?>">
+                    </div>
+                <?php endforeach; ?>
+                
+                <!-- Кнопки навигации -->
+                <button class="previous" onclick="previousSlide()">&#10094;</button>
+                <button class="next" onclick="nextSlide()">&#10095;</button>
+            </div>
+            
+            <!-- Точки индикаторы -->
+            <div class="slider-dots">
+                <?php for ($i = 1; $i <= count($slider_images); $i++): ?>
+                    <span class="dot" onclick="currentSlide(<?php echo $i; ?>)"></span>
+                <?php endfor; ?>
+            </div>
+
             <h1>О нас</h1>
 
             <div class="content-with-image">
@@ -121,6 +164,9 @@ require_once 'db_connect.php';
     <!-- Подвал сайта -->
     <div class="footer">
         &copy; Все права защищены
+        <?php if (isset($_SESSION['user_id'])): ?>
+            | <a href="#" class="privacy-link">Политика конфиденциальности</a>
+        <?php endif; ?>
     </div>
 </body>
 </html>
