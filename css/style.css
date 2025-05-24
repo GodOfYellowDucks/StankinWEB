@@ -1194,3 +1194,352 @@ ol.multilevel {
         width: 100%;
     }
 }
+/* Стили для слайдера на главной странице */
+.slider {
+    max-width: 90%;
+    position: relative;
+    margin: 20px auto;
+    height: 300px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.slider .item {
+    display: none;
+    animation-name: fade;
+    animation-duration: 1.5s;
+    position: relative;
+}
+
+.slider .item:first-child {
+    display: block;
+}
+
+.slider .item img {
+    object-fit: cover;
+    width: 100%;
+    height: 300px;
+    border-radius: 8px;
+}
+
+.slider .item a {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Оверлей с текстом для слайдера баннеров */
+.slide-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.slider .item:hover .slide-overlay {
+    transform: translateY(0);
+}
+
+.slide-overlay h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.slide-overlay p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Кнопки назад и вперёд */
+.slider .previous, .slider .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    user-select: none;
+    border: none;
+}
+
+.slider .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.slider .previous:hover,
+.slider .next:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Точки индикаторы */
+.slider-dots {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.dot.active, .dot:hover {
+    background-color: #FF8000;
+}
+
+/* Анимация слайдов */
+@keyframes fade {
+    from {
+        opacity: 0.4;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Стили для галереи товара */
+.product-gallery {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin-right: 20px;
+}
+
+.product-slider {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.product-slide {
+    display: none;
+}
+
+.product-slide:first-child {
+    display: block;
+}
+
+.product-slide img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    cursor: pointer;
+    border: 2px solid #FF8000;
+    border-radius: 8px;
+}
+
+.product-gallery .previous, .product-gallery .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 12px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    user-select: none;
+    border: none;
+}
+
+.product-gallery .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.product-gallery .previous:hover,
+.product-gallery .next:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Миниатюры */
+.thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 5px 0;
+}
+
+.thumbnail {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail.active {
+    border-color: #FF8000;
+}
+
+.thumbnail:hover {
+    border-color: #FFBF40;
+}
+
+/* Адаптивность для галереи товара */
+@media (max-width: 768px) {
+    .product-gallery {
+        max-width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    .thumbnails {
+        justify-content: center;
+    }
+    
+    .slider {
+        height: 200px;
+    }
+    
+    .slider .item img {
+        height: 200px;
+    }
+    
+    .slide-overlay {
+        padding: 15px;
+    }
+    
+    .slide-overlay h3 {
+        font-size: 16px;
+    }
+    
+    .slide-overlay p {
+        font-size: 12px;
+    }
+}
+
+/* Стили для галереи товара */
+.product-gallery {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin-right: 20px;
+}
+
+.product-slider {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.product-slide {
+    display: none;
+}
+
+.product-slide:first-child {
+    display: block;
+}
+
+.product-slide img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    cursor: pointer;
+    border: 2px solid #FF8000;
+    border-radius: 8px;
+}
+
+.product-gallery .previous, .product-gallery .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 12px;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    user-select: none;
+    border: none;
+}
+
+.product-gallery .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.product-gallery .previous:hover,
+.product-gallery .next:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Миниатюры */
+.thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 5px 0;
+}
+
+.thumbnail {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail.active {
+    border-color: #FF8000;
+}
+
+.thumbnail:hover {
+    border-color: #FFBF40;
+}
+
+/* Адаптивность для галереи товара */
+@media (max-width: 768px) {
+    .product-gallery {
+        max-width: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    .thumbnails {
+        justify-content: center;
+    }
+}

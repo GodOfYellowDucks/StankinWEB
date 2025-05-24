@@ -1,7 +1,13 @@
 <?php
+// Запускаем сессию
+session_start();
+
 // Подключаемся к базе данных
 require_once 'db_connect.php';
 require_once 'products_functions.php';
+
+// Проверяем авторизацию пользователя
+$is_logged_in = isset($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -10,10 +16,11 @@ require_once 'products_functions.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог - Диамант</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/privacy-modal.js"></script>
+    <script src="js/cart.js"></script>
 </head>
 <body>
     <?php include 'header.php'; ?>
-
 
     <!-- Основной контент -->
     <div class="content">
@@ -99,6 +106,9 @@ require_once 'products_functions.php';
     <!-- Подвал сайта -->
     <div class="footer">
         &copy; Все права защищены
+        <?php if ($is_logged_in): ?>
+            | <a href="#" class="privacy-link">Политика конфиденциальности</a>
+        <?php endif; ?>
     </div>
 </body>
 </html>

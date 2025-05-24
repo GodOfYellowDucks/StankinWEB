@@ -1,7 +1,13 @@
 <?php
+// Запускаем сессию
+session_start();
+
 // Подключаемся к базе данных
 require_once 'db_connect.php';
 require_once 'products_functions.php';
+
+// Проверяем авторизацию пользователя
+$is_logged_in = isset($_SESSION['user_id']);
 
 // Получаем товары из категории "other"
 $products = getProductsByCategory($conn, 'other');
@@ -13,11 +19,11 @@ $products = getProductsByCategory($conn, 'other');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Прочие украшения - Диамант</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/privacy-modal.js"></script>
+    <script src="js/cart.js"></script>
 </head>
 <body>
     <?php include 'header.php'; ?>
-
-
 
     <!-- Основной контент -->
     <div class="content">
@@ -64,6 +70,16 @@ $products = getProductsByCategory($conn, 'other');
                             <a href="product.php?id=<?php echo $product['id']; ?>"><?php echo htmlspecialchars($product['name']); ?></a>
                             <p><?php echo htmlspecialchars($product['short_description']); ?></p>
                             <p class="price">Цена: <?php echo number_format($product['price'], 0, ',', ' '); ?> руб.</p>
+                            
+                            <?php if ($is_logged_in): ?>
+                                <button class="add-to-cart-button" style="margin-top: 10px; background-color: #FF8000; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; width: 100%;">
+                                    Добавить в корзину
+                                </button>
+                            <?php else: ?>
+                                <p style="margin-top: 10px; font-size: 12px; color: #666; text-align: center;">
+                                    <a href="login.php">Войдите</a>, чтобы добавить в корзину
+                                </p>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -100,6 +116,9 @@ $products = getProductsByCategory($conn, 'other');
     <!-- Подвал сайта -->
     <div class="footer">
         &copy; Все права защищены
+        <?php if ($is_logged_in): ?>
+            | <a href="#" class="privacy-link">Политика конфиденциальности</a>
+        <?php endif; ?>
     </div>
 </body>
 </html>
